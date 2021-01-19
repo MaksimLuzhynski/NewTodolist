@@ -1,4 +1,4 @@
-import React, { useState } from 'react'; 
+import React, { useState } from 'react';
 import './App.css';
 import Todolist from './Todolist';
 import { v1 } from 'uuid';
@@ -41,6 +41,15 @@ function App() {
         let newTask = [task, ...tasks];
         setTasks(newTask);
     }
+    //Ниже ф-ция, меняющая значение чекбокса
+    function changeStatus(taskId: string, isDone: boolean) {
+        let task = tasks.find(item => item.id === taskId)
+        if (task) {
+            task.isDone = isDone;
+            setTasks([...tasks]);
+        }
+
+    }
 
     return (
         <div className="App">
@@ -50,6 +59,8 @@ function App() {
                 removeTask={removeTask}
                 changeFilter={changeFilter}
                 addTask={addTask}
+                changeStatus={changeStatus}
+                filter={filter}
             />
         </div>
     );
