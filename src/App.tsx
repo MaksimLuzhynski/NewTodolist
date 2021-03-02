@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import './App.css';
-import Todolist from './Todolist';
+import Todolist, { TaskType } from './Todolist';
 import { v1 } from 'uuid';
+import AddItemForm from './AddItemForm';
 
 export type FilterValuesType = "all" | "complited" | "active"
 
@@ -9,6 +10,10 @@ type TodolistsType = {
     id: string,
     title: string,
     filter: FilterValuesType
+}
+
+type TasksStateType = {
+    [key: string]: Array<TaskType>
 }
 
 
@@ -22,7 +27,7 @@ function App() {
         { id: todolistID2, title: "What to buy", filter: "all" },
     ]);
 
-    let [tasks, setTasks] = useState({
+    let [tasks, setTasks] = useState<TasksStateType>({
         [todolistID1]: [
             { id: v1(), title: "HTML", isDone: true },
             { id: v1(), title: "React", isDone: false },
@@ -35,7 +40,6 @@ function App() {
             { id: v1(), title: "Milk", isDone: false },
         ]
     })
-
 
     // Ниже ф-ция фильтрации тасок
     function changeFilter(value: FilterValuesType, todolistID: string) {
@@ -63,6 +67,16 @@ function App() {
         setTasks({ ...tasks });
     }
 
+    //Ниже ф-ция, меняющая название таски
+    function changeTaskTitle(taskId: string, newValue: string, todolistID: string) {
+        let tasksOneOfTodolist = tasks[todolistID]
+        let task = tasksOneOfTodolist.find(item => item.id === taskId)
+        if (task) {
+            task.title = newValue;
+            setTasks({ ...tasks });
+        }
+    }
+
     //Ниже ф-ция, меняющая значение чекбокса
     function changeStatus(taskId: string, isDone: boolean, todolistID: string) {
         let tasksOneOfTodolist = tasks[todolistID]
@@ -77,14 +91,33 @@ function App() {
     function removeTodolist(todolistID: string) {
         let filteredTodolists = todolists.filter(item => item.id !== todolistID);
         setTodolists(filteredTodolists);
-        
+
         delete tasks[todolistID];
-        setTasks({...tasks});
+        setTasks({ ...tasks });
+    }
+
+    // Ниже ф-ция добавления тудулистов
+    function addTodolist(newTitle: string) {
+        let newTodolist: TodolistsType = { id: v1(), title: newTitle, filter: "all" };
+        setTodolists([newTodolist, ...todolists]);
+        setTasks({ ...tasks, [newTodolist.id]: [] });
+    }
+
+    //Ниже ф-ция, меняющая название тудулиста
+    function changeTodolistTitle(newTitle: string, todolistID: string) {
+        let todolist = todolists.find(item => item.id === todolistID)
+        if (todolist) {
+            todolist.title = newTitle;
+            setTodolists([...todolists]);
+        }
     }
 
 
     return (
         <div className="App">
+            <AddItemForm
+                addItem={addTodolist}
+            />
             {
                 todolists.map((item) => {
 
@@ -106,8 +139,10 @@ function App() {
                         changeFilter={changeFilter}
                         addTask={addTask}
                         changeStatus={changeStatus}
+                        changeTaskTitle={changeTaskTitle}
                         filter={item.filter}
                         removeTodolist={removeTodolist}
+                        changeTodolistTitle={changeTodolistTitle}
                     />
                 })
             }
@@ -117,12 +152,6 @@ function App() {
 
 export default App;
 
-// function App() {
-
-//     let [date, setDate] = useState(5)
-//     return <div onClick={() => { setDate(date + 3) }}>{date}</div>
-
-// }
 
 
 
