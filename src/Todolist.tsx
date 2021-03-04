@@ -2,6 +2,8 @@ import React, { ChangeEvent, KeyboardEvent, useState } from 'react';
 import { FilterValuesType } from './App';
 import AddItemForm from './AddItemForm';
 import { EditableSpan } from './EditableSpan';
+import { Button, Checkbox, IconButton } from '@material-ui/core';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 export type TaskType = {
     id: string
@@ -36,12 +38,12 @@ function Todolist(props: PropsType) {
         <div className="App">
             <div>
                 <h3><EditableSpan title={props.title} onChange={changeTodolistTitle} />
-                    <button onClick={removeTodolist}>x</button>
+                    <IconButton onClick={removeTodolist}><DeleteIcon /></IconButton>
                 </h3>
                 <AddItemForm
                     addItem={addTask}
                 />
-                <ul>
+                <div>
                     {
                         props.tasks.map(item => {
 
@@ -53,11 +55,10 @@ function Todolist(props: PropsType) {
                                 props.changeTaskTitle(item.id, newValue, props.id)
                             }
 
-                            return <li
+                            return <div
                                 key={item.id}
                                 className={item.isDone ? "is-done" : ""}>
-                                <input
-                                    type="checkbox"
+                                <Checkbox
                                     checked={item.isDone}
                                     onChange={onChangeStatusHandler}
                                 />
@@ -65,18 +66,26 @@ function Todolist(props: PropsType) {
                                     title={item.title}
                                     onChange={onChangeTitleHandler}
                                 />
-                                <button onClick={onRemoveHandler}>x</button>
-                            </li>
+                                <IconButton onClick={onRemoveHandler}><DeleteIcon /></IconButton>
+                            </div>
                         })
                     }
-                </ul>
+                </div>
                 <div>
-                    <button className={props.filter === "all" ? "active-filter" : ""}
-                        onClick={onAllClickHandler}>All</button>
-                    <button className={props.filter === "active" ? "active-filter" : ""}
-                        onClick={onActiveClickHandler}> Active</button>
-                    <button className={props.filter === "complited" ? "active-filter" : ""}
-                        onClick={onComplitedClickHandler}>Completed</button>
+                    <Button
+                        variant={props.filter === "all" ? "contained" : "text"}
+                        onClick={onAllClickHandler}
+                    >All</Button>
+                    <Button
+                        variant={props.filter === "active" ? "contained" : "text"}
+                        onClick={onActiveClickHandler}
+                        color={"primary"}
+                    > Active</Button>
+                    <Button
+                        variant={props.filter === "complited" ? "contained" : "text"}
+                        onClick={onComplitedClickHandler}
+                        color={"secondary"}
+                    >Completed</Button>
                 </div>
             </div>
         </div>

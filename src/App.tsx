@@ -3,6 +3,8 @@ import './App.css';
 import Todolist, { TaskType } from './Todolist';
 import { v1 } from 'uuid';
 import AddItemForm from './AddItemForm';
+import { AppBar, Button, Container, Grid, IconButton, Paper, Toolbar, Typography } from '@material-ui/core';
+import { Menu } from '@material-ui/icons';
 
 export type FilterValuesType = "all" | "complited" | "active"
 
@@ -115,37 +117,58 @@ function App() {
 
     return (
         <div className="App">
-            <AddItemForm
-                addItem={addTodolist}
-            />
-            {
-                todolists.map((item) => {
-
-                    let tasksForTodolist = tasks[item.id]
-
-                    if (item.filter === "complited") {
-                        tasksForTodolist = tasksForTodolist.filter(item => item.isDone === true)
-                    }
-                    if (item.filter === "active") {
-                        tasksForTodolist = tasksForTodolist.filter(item => item.isDone === false)
-                    }
-
-                    return <Todolist
-                        key={item.id}
-                        id={item.id}
-                        title={item.title}
-                        tasks={tasksForTodolist}
-                        removeTask={removeTask}
-                        changeFilter={changeFilter}
-                        addTask={addTask}
-                        changeStatus={changeStatus}
-                        changeTaskTitle={changeTaskTitle}
-                        filter={item.filter}
-                        removeTodolist={removeTodolist}
-                        changeTodolistTitle={changeTodolistTitle}
+            <AppBar position="static">
+                <Toolbar>
+                    <IconButton edge="start" color="inherit" aria-label="menu">
+                        <Menu />
+                    </IconButton>
+                    <Typography variant="h6">
+                        News
+    </Typography>
+                    <Button color="inherit">Login</Button>
+                </Toolbar>
+            </AppBar>
+            <Container fixed>
+                <Grid container style={{padding:"20px"}}>
+                    <AddItemForm
+                        addItem={addTodolist}
                     />
-                })
-            }
+                </Grid>
+                <Grid container spacing={3}>
+                    {
+                        todolists.map((item) => {
+
+                            let tasksForTodolist = tasks[item.id]
+
+                            if (item.filter === "complited") {
+                                tasksForTodolist = tasksForTodolist.filter(item => item.isDone === true)
+                            }
+                            if (item.filter === "active") {
+                                tasksForTodolist = tasksForTodolist.filter(item => item.isDone === false)
+                            }
+
+                            return <Grid item>
+                                <Paper style={{padding:"20px"}}>
+                                    <Todolist
+                                        key={item.id}
+                                        id={item.id}
+                                        title={item.title}
+                                        tasks={tasksForTodolist}
+                                        removeTask={removeTask}
+                                        changeFilter={changeFilter}
+                                        addTask={addTask}
+                                        changeStatus={changeStatus}
+                                        changeTaskTitle={changeTaskTitle}
+                                        filter={item.filter}
+                                        removeTodolist={removeTodolist}
+                                        changeTodolistTitle={changeTodolistTitle}
+                                    />
+                                </Paper>
+                            </Grid>
+                        })
+                    }
+                </Grid>
+            </Container>
         </div>
     );
 }
